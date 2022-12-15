@@ -343,7 +343,96 @@ extension Recursion {
             printAllPermutations(of: updateArr, size: size, result: newResult)
         }
     }
+    
+    /// Count total no of paths from start to end of the matrix. Only right and down movement is allowed
+    func countPaths(row: Int, column: Int, rowSize: Int, columnSize: Int, totalPaths: inout Int) {
+        // Can not move further
+        if row == rowSize || column == columnSize {
+            return
+        }
+        
+        // Reached to the end
+        if row == rowSize-1 && column == columnSize - 1 {
+            totalPaths += 1
+            return
+        }
+        
+        // Move right
+        countPaths(row: row, column: column+1, rowSize: rowSize, columnSize: columnSize, totalPaths: &totalPaths)
+        
+        // Move down
+        countPaths(row: row+1, column: column , rowSize: rowSize, columnSize: columnSize, totalPaths: &totalPaths)
+    }
+    
+    /// Find the number of ways in which you can invite n people to your party, single or pairs
+    func callGuest(numberOfGuests: Int) -> Int {
+        if numberOfGuests <= 1 {
+            return 1
+        }
+        
+        let noOfWaysToCallOneGuest = callGuest(numberOfGuests: numberOfGuests-1)
+        let noOfWaysToCallGuestInPair = (numberOfGuests-1)*(callGuest(numberOfGuests: numberOfGuests-2))
+        
+        return noOfWaysToCallOneGuest+noOfWaysToCallGuestInPair
+    }
+    
+    /// Print all the subset of a set of first n natural numbers
+    func printSubSet(of n: Int, result: [Int]) {
+        if n == 0 {
+            print(result)
+            return
+        }
+        
+        // Add number
+        var newResult = result
+        newResult.append(n)
+        printSubSet(of: n-1, result: newResult)
+        
+        // Skip this number
+        newResult.removeLast()
+        printSubSet(of: n-1, result: newResult)
+    }
+    
+    /// Place tiles of size 1*m in a floor of size n*m
+    func placeTile(row: Int, column: Int) -> Int {
+        if row == column {
+            return 2
+        }
+        
+        if row < column {
+            return 1
+        }
+        
+        // Place vertically
+        let verticalPlacements = placeTile(row: row-column, column: column)
+        
+        // Place horizontally
+        let horizontalPlacements = placeTile(row: row-1, column: column)
+        
+        return verticalPlacements+horizontalPlacements
+    }
 }
 
-var result = [Character]()
-recursion.printAllPermutations(of: ["a","b","c"], size: 3, result: result)
+/// Print all permutations of a string
+//var result = [Character]()
+//recursion.printAllPermutations(of: ["a","b","c"], size: 3, result: result)
+
+
+/// Count total no of paths from start to end of the matrix
+//var totalPaths = 0
+//recursion.countPaths(row: 0, column: 0, rowSize: 3, columnSize: 3, totalPaths: &totalPaths)
+//print(totalPaths)
+
+
+/// Find the number of ways in which you can invite n people to your party, single or pairs
+//let totalNoOfWays = recursion.callGuest(numberOfGuests: 4)
+//print(totalNoOfWays)
+
+
+/// Print all the subset of a set of first n natural numbers
+//recursion.printSubSet(of: 3, result: [])
+
+
+/// Place tiles of size 1*m in a floor of size n*m
+let totalWays = recursion.placeTile(row: 4, column: 2)
+print(totalWays)
