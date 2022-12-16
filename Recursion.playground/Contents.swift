@@ -434,5 +434,132 @@ extension Recursion {
 
 
 /// Place tiles of size 1*m in a floor of size n*m
-let totalWays = recursion.placeTile(row: 4, column: 2)
-print(totalWays)
+//let totalWays = recursion.placeTile(row: 4, column: 2)
+//print(totalWays)
+
+final class Backtracking {
+    
+    /// Print all permutation of a character array
+    func printPermutation(of arr:[Character], result: [Character]) {
+        if arr.isEmpty {
+            print(result)
+            return
+        }
+        for (index, char) in arr.enumerated() {
+            var newResult = result
+            newResult.append(char)
+            
+            var updatedNumber = arr
+            updatedNumber.remove(at: index)
+            
+            printPermutation(of: updatedNumber, result: newResult)
+        }
+    }
+    
+    /// N- Queen problem
+    func placeNQueen(in board: inout [[Character]], allBoards: inout [[String]], column: Int) {
+        if column == board.count {
+            saveBoard(board: board, allBoards: &allBoards)
+            return
+        }
+        
+        for currentRow in stride(from: 0, to: board.count, by: 1) {
+            if isSafe(row: currentRow, column: column, board: board) {
+                board[currentRow][column] = "Q"
+                placeNQueen(in: &board, allBoards: &allBoards, column: column+1)
+                board[currentRow][column] = "."
+            } 
+        }     
+    }
+    func saveBoard(board: [[Character]], allBoards: inout [[String]]) {
+        var newBoard = [String]()
+        for rowNo in stride(from: 0, to: board.count, by: 1) {
+            var row = ""
+            for columnNo in stride(from: 0, to: board.count, by: 1) {
+                print(rowNo, columnNo)
+                if board[rowNo][columnNo] == "Q" {
+                    row += "Q"
+                } else {
+                    row += "."
+                }
+            }
+            newBoard.append(row)
+        }
+        allBoards.append(newBoard)
+    }
+    func isSafe(row: Int, column: Int, board: [[Character]]) -> Bool {
+        // Check horizontally
+        for columnNo in stride(from: 0, to: board.count, by: 1) {
+            if board[row][columnNo] == "Q" {
+                return false
+            }
+        }
+        
+        // Check vertically
+        for rowNo in stride(from: 0, to: board.count, by: 1) {
+            if board[rowNo][column] == "Q" {
+                return false
+            }
+        }
+        
+        // Check Upper Left
+        var columnNo = column
+        var rowNo = row
+        while(columnNo >= 0 && rowNo >= 0) {
+            if board[rowNo][columnNo] == "Q" {
+                return false
+            }
+            rowNo -= 1
+            columnNo -= 1
+        }
+        
+        // Check Upper Right
+        columnNo = column
+        rowNo = row
+        while(columnNo < board.count && rowNo >= 0) {
+            if board[rowNo][columnNo] == "Q" {
+                return false
+            }
+            rowNo -= 1
+            columnNo += 1
+        }
+        
+        // Check Bottom Left
+        columnNo = column
+        rowNo = row
+        while(columnNo >= 0 && rowNo < board.count) {
+            if board[rowNo][columnNo] == "Q" {
+                return false
+            }
+            rowNo += 1
+            columnNo -= 1
+        }
+        
+        // Check Bottom Right
+        columnNo = column
+        rowNo = row
+        while(columnNo < board.count && rowNo < board.count) {
+            if board[rowNo][columnNo] == "Q" {
+                return false
+            }
+            rowNo += 1
+            columnNo += 1
+        }
+        
+        return true
+    }
+}
+
+let backtrack = Backtracking()
+
+/// Print all permutation of a character array
+//var result = [Character]()
+//backtrack.printPermutation(of: ["A","B","C"], result: result)
+
+
+/// N-Queen Problem
+//let numberOfQueens = 1 or 4
+//var allBoards = [[String]]()
+//var board = [[Character]](repeating: Array(repeating: Character(".") , count: numberOfQueens), count: numberOfQueens)
+//backtrack.placeNQueen(in: &board, allBoards: &allBoards, column: 0)  
+//print(allBoards)
